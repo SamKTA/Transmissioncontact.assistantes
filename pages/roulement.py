@@ -5,7 +5,7 @@ from utils.ui import header, animated_button, card, notification, load_material_
 from utils.session import change_page
 from utils.constants import CONSEILLERS, ROULEMENTS
 from services.sheets_service import read_rotations, add_unavailability
-from services.rotation_service import get_next_counselor, handle_skip, is_available
+from services.rotation_service import get_next_counselor, is_available
 
 def show():
     """Affiche la page de gestion des roulements"""
@@ -36,101 +36,57 @@ def show():
         unsafe_allow_html=True
     )
     
-    # Afficher les trois options de roulement avec animation
-    st.markdown(
-        """
-        <style>
-        .rotation-card {
-            transition: all 0.3s ease;
-            cursor: pointer;
-        }
-        .rotation-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 8px 16px rgba(0,0,0,0.2);
-        }
-        </style>
-        """,
-        unsafe_allow_html=True
-    )
+    # Initialiser les paramètres de session pour les conseillers courants
+    for rotation_type in ROULEMENTS:
+        current_key = f"current_{rotation_type}"
+        if current_key not in st.session_state:
+            # Obtenir le dernier conseiller pour ce type
+            rotation_data = etat_df[etat_df["Type"] == rotation_type]
+            last_counselor = rotation_data["Dernier_Conseiller"].values[0] if not rotation_data.empty else ""
+            
+            # Initialiser avec le conseiller suivant
+            order = ROULEMENTS[rotation_type]
+            if last_counselor in order:
+                idx = order.index(last_counselor)
+                next_idx = (idx + 1) % len(order)
+                st.session_state[current_key] = order[next_idx]
+            else:
+                st.session_state[current_key] = order[0]
+    
+    # Gérer les actions des boutons Suivant
+    for rotation_type in ROULEMENTS:
+        skip_button = f"skip_{rotation_type}"
+        if skip_button in st.session_state and st.session_state[skip_button]:
+            # Obtenir le conseiller suivant
+            current_key = f"current_{rotation_type}"
+            current_counselor = st.session_state[current_key]
+            order = ROULEMENTS[rotation_type]
+            
+            if current_counselor in order:
+                idx = order.index(current_counselor)
+                next_idx = (idx + 1) % len(order)
+                next_counselor = order[next_idx]
+                
+                # Vérifier si le conseiller est disponible
+                while not is_available(next_counselor, indispo_df):
+                    next_idx = (next_idx + 1) % len(order)
+                    next_counselor = order[next_idx]
+                    if next_idx == idx:  # Éviter la boucle infinie
+                        break
+                
+                # Mettre à jour le conseiller
+                st.session_state[current_key] = next_counselor
+                
+                # Réinitialiser le bouton
+                st.session_state[skip_button] = False
     
     # Créer trois colonnes pour les types de roulement
     col1, col2, col3 = st.columns(3)
     
-    # Fonction pour créer une carte de roulement
-   def create_rotation_card(column, rotation_type, color):
-    with column:
-        # Trouver le dernier conseiller et déterminer le prochain
-        rotation_data = etat_df[etat_df["Type"] == rotation_type]
-        last_counselor = rotation_data["Dernier_Conseiller"].values[0] if not rotation_data.empty else ""
-        
-        # Créer une clé de session spécifique à ce type de roulement pour stocker le conseiller actuel
-        current_counselor_key = f"current_counselor_{rotation_type}"
-        
-        # Initialiser le conseiller actuel s'il n'existe pas dans la session
-        if current_counselor_key not in st.session_state:
-            st.session_state[current_counselor_key] = get_next_counselor(rotation_type, last_counselor, indispo_df)
-        
-        # Afficher la carte
-        st.markdown(
-            f"""
-            <div class="rotation-card" style="background-color: white; border-radius: 10px; padding: 1rem; 
-                        box-shadow: 0 4px 8px rgba(0,0,0,0.1); border-top: 5px solid {color};">
-                <h3 style="color: {color};">{rotation_type}</h3>
-                <p><strong>Dernier contact attribué à:</strong> {last_counselor or "Aucun"}</p>
-                <p><strong>Conseiller suivant recommandé:</strong> {st.session_state[current_counselor_key] or "Non déterminé"}</p>
-            </div>
-            """,
-            unsafe_allow_html=True
-        )
-        
-        # Boutons d'action
-        col_select, col_skip = st.columns(2)
-        
-        with col_select:
-            if st.button(f"Sélectionner", key=f"btn_select_{rotation_type}"):
-                # Si sélectionné, on envoie vers le formulaire avec ce conseiller
-                st.session_state.type_roulement = rotation_type
-                st.session_state.conseiller_selectionne = CONSEILLERS.get(
-                    st.session_state[current_counselor_key], 
-                    st.session_state[current_counselor_key]
-                )
-                change_page("formulaire")
-        
-        with col_skip:
-            if st.button(f"Suivant", key=f"btn_skip_{rotation_type}"):
-                # Solution directe : utiliser l'ordre prédéfini et passer au suivant
-                order = ROULEMENTS[rotation_type]
-                
-                # Trouver l'index du conseiller actuel dans l'ordre
-                try:
-                    current_idx = order.index(st.session_state[current_counselor_key])
-                    # Passer au conseiller suivant (avec boucle à la fin)
-                    next_idx = (current_idx + 1) % len(order)
-                    next_counselor = order[next_idx]
-                    
-                    # Vérifier si le conseiller est disponible
-                    if not is_available(next_counselor, indispo_df):
-                        # Si indisponible, passer au suivant
-                        next_idx = (next_idx + 1) % len(order)
-                        next_counselor = order[next_idx]
-                    
-                    # Message pour montrer le changement
-                    st.warning(f"Passage de {st.session_state[current_counselor_key]} à {next_counselor}.")
-                    
-                    # Mettre à jour le conseiller actuel
-                    st.session_state[current_counselor_key] = next_counselor
-                    
-                except ValueError:
-                    # Si le conseiller actuel n'est pas dans l'ordre, prendre le premier
-                    st.session_state[current_counselor_key] = order[0]
-                
-                # Forcer le rechargement pour afficher le nouveau conseiller
-                st.experimental_rerun()
-    
-    # Afficher les cartes de roulement
-    create_rotation_card(col1, "VENDEURS PAS DE PROJET", "#E91E63")
-    create_rotation_card(col2, "VENDEURS PROJET VENTE", "#9C27B0")
-    create_rotation_card(col3, "ACQUÉREURS", "#3F51B5")
+    # Afficher les cartes de roulement pour chaque type
+    create_rotation_card(col1, "VENDEURS PAS DE PROJET", "#E91E63", etat_df, indispo_df)
+    create_rotation_card(col2, "VENDEURS PROJET VENTE", "#9C27B0", etat_df, indispo_df)
+    create_rotation_card(col3, "ACQUÉREURS", "#3F51B5", etat_df, indispo_df)
     
     # Section pour la gestion des indisponibilités
     st.markdown("<br>", unsafe_allow_html=True)
@@ -209,3 +165,66 @@ def show():
             st.subheader(rotation_type)
             order_str = " → ".join(order)
             st.markdown(f"<div style='background-color: #f8f9fa; padding: 10px; border-radius: 5px;'>{order_str}</div>", unsafe_allow_html=True)
+
+
+def create_rotation_card(column, rotation_type, color, etat_df, indispo_df):
+    with column:
+        # Clé de session pour le conseiller actuel
+        current_key = f"current_{rotation_type}"
+        
+        # Trouver le dernier conseiller attribué
+        rotation_data = etat_df[etat_df["Type"] == rotation_type]
+        last_counselor = rotation_data["Dernier_Conseiller"].values[0] if not rotation_data.empty else ""
+        
+        # Afficher la carte
+        st.markdown(
+            f"""
+            <div class="rotation-card" style="background-color: white; border-radius: 10px; padding: 1rem; 
+                       box-shadow: 0 4px 8px rgba(0,0,0,0.1); border-top: 5px solid {color};">
+                <h3 style="color: {color};">{rotation_type}</h3>
+                <p><strong>Dernier contact attribué à:</strong> {last_counselor or "Aucun"}</p>
+                <p><strong>Conseiller suivant recommandé:</strong> {st.session_state[current_key]}</p>
+            </div>
+            """,
+            unsafe_allow_html=True
+        )
+        
+        # Boutons d'action
+        col_select, col_skip = st.columns(2)
+        
+        with col_select:
+            if st.button(f"Sélectionner", key=f"btn_select_{rotation_type}"):
+                # Si sélectionné, on envoie vers le formulaire avec ce conseiller
+                st.session_state.type_roulement = rotation_type
+                st.session_state.conseiller_selectionne = CONSEILLERS.get(
+                    st.session_state[current_key], 
+                    st.session_state[current_key]
+                )
+                change_page("formulaire")
+        
+        with col_skip:
+            # Utiliser un callback pour le bouton Suivant
+            st.button(
+                f"Suivant", 
+                key=f"btn_skip_{rotation_type}", 
+                on_click=activate_skip, 
+                args=(rotation_type,)
+            )
+
+def activate_skip(rotation_type):
+    """Active le drapeau de saut pour ce type de roulement"""
+    skip_button = f"skip_{rotation_type}"
+    st.session_state[skip_button] = True
+    
+    # Ajouter un message pour l'utilisateur
+    current_key = f"current_{rotation_type}"
+    current_counselor = st.session_state[current_key]
+    
+    # Obtenir le prochain conseiller (pour l'affichage uniquement)
+    order = ROULEMENTS[rotation_type]
+    idx = order.index(current_counselor) if current_counselor in order else 0
+    next_idx = (idx + 1) % len(order)
+    next_counselor = order[next_idx]
+    
+    # Stocker le message
+    st.session_state.message = f"Passage de {current_counselor} à {next_counselor}."
