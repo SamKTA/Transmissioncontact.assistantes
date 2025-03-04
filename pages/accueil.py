@@ -1,6 +1,6 @@
 import streamlit as st
 from utils.ui import header, animated_button, card, notification, load_material_icons
-from utils.session import change_page_with_loading
+from utils.session import change_page
 
 def show():
     """Affiche la page d'accueil"""
@@ -54,7 +54,7 @@ def show():
             color="#4CAF50",
             footer="Le système proposera automatiquement un conseiller selon les règles définies."
         )
-        animated_button("Système de Roulement", key="btn_roulement", on_click=change_page_with_loading, args=("roulement",), color="#4CAF50")
+        animated_button("Système de Roulement", key="btn_roulement", on_click=change_page, args=("roulement",), color="#4CAF50")
     
     with col2:
         card(
