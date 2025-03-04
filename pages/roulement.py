@@ -2,7 +2,7 @@ import streamlit as st
 import pandas as pd
 from datetime import datetime
 from utils.ui import header, animated_button, card, notification, load_material_icons
-from utils.session import change_page
+from utils.session import change_page_with_loading
 from utils.constants import CONSEILLERS, ROULEMENTS
 from services.sheets_service import read_rotations, add_unavailability
 from services.rotation_service import get_next_counselor, handle_skip, is_available
@@ -21,7 +21,7 @@ def show():
     # Bouton de retour à l'accueil
     col_back, _ = st.columns([1, 5])
     with col_back:
-        animated_button("← Retour à l'accueil", key="btn_back_to_home", on_click=change_page, args=("accueil",), color="#888")
+        animated_button("← Retour à l'accueil", key="btn_back_to_home", on_click=change_page_with_loading, args=("accueil",), color="#888")
     
     # Lire l'état actuel des roulements
     etat_df, indispo_df = read_rotations()
