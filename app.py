@@ -58,8 +58,8 @@ def main():
     
     # Affichage du logo ORPI
     col1, col2, col3 = st.columns([1, 2, 1])
-with col2:
-    st.image("assets/logo-orpi.jpeg", width=200)
+    with col2:
+        st.image("assets/logo-orpi.jpeg", width=200)
     
     # Navigation en fonction de la page actuelle
     if st.session_state.page == "accueil":
