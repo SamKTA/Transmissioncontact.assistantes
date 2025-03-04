@@ -1,6 +1,6 @@
 import streamlit as st
 from utils.ui import header, animated_button, card, notification, load_material_icons
-from utils.session import change_page_with_loading
+from utils.session import change_page
 from utils.constants import CONSEILLERS, EMAILS_CONSEILLERS
 
 def show():
@@ -17,7 +17,7 @@ def show():
     # Bouton de retour à l'accueil
     col_back, _ = st.columns([1, 5])
     with col_back:
-        animated_button("← Retour à l'accueil", key="btn_back_to_home", on_click=change_page_with_loading, args=("accueil",), color="#888")
+        animated_button("← Retour à l'accueil", key="btn_back_to_home", on_click=change_page, args=("accueil",), color="#888")
     
     # Styliser le titre de section
     st.markdown(
