@@ -7,6 +7,13 @@ from utils.constants import CONSEILLERS, ROULEMENTS
 from services.sheets_service import read_rotations, add_unavailability
 from services.rotation_service import get_next_counselor, is_available
 
+def select_and_redirect(rotation_type, counselor):
+    """Fonction callback pour sélectionner un conseiller et rediriger vers le formulaire"""
+    st.session_state.type_roulement = rotation_type
+    st.session_state.conseiller_selectionne = CONSEILLERS.get(counselor, counselor)
+    st.session_state.page = "formulaire"
+    st.session_state.redirect_requested = True
+
 def show():
     """Affiche la page de gestion des roulements"""
     # Charger les icônes Material Design
@@ -193,14 +200,13 @@ def create_rotation_card(column, rotation_type, color, etat_df, indispo_df):
         col_select, col_skip = st.columns(2)
         
         with col_select:
-            # Solution directe pour le bouton Sélectionner
-            if st.button(f"Sélectionner", key=f"btn_select_{rotation_type}"):
-                # Préparer les variables nécessaires pour le formulaire
-                st.session_state.type_roulement = rotation_type
-                st.session_state.conseiller_selectionne = CONSEILLERS.get(
-                    st.session_state[current_key], 
-                    st.session_state[current_key]
-                )
+            current_counselor = st.session_state[current_key]
+            st.button(
+                f"Sélectionner",
+                key=f"btn_select_{rotation_type}",
+                on_click=select_and_redirect,
+                args=(rotation_type, current_counselor)
+            )
                 
                 # Redirection directe avec JavaScript (plus fiable que change_page)
                 js = f"""
