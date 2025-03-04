@@ -2,17 +2,12 @@ import streamlit as st
 import time
 
 def change_page(page):
-    """Change la page actuelle avec un effet de chargement"""
+    """Change la page actuelle avec une redirection par URL"""
     # Sauvegarder la page précédente
     previous_page = st.session_state.page
     
-    # Afficher un spinner pendant 0.5 seconde pour simuler un chargement
-    with st.spinner("Chargement en cours..."):
-        # Changer la page
-        st.session_state.page = page
-        
-        # Ajouter un petit délai pour que le spinner soit visible
-        time.sleep(0.5)
+    # Mettre à jour la page dans la session
+    st.session_state.page = page
     
     # Réinitialiser certaines variables selon les transitions
     if previous_page == "roulement" and page == "accueil":
@@ -25,8 +20,13 @@ def change_page(page):
     if page == "hors_roulement":
         st.session_state.from_hors_roulement = True
     
-    # Forcer le rechargement de la page
-    st.experimental_rerun()
+    # Rediriger en utilisant JavaScript
+    js = f"""
+    <script>
+        window.parent.location.href = window.parent.location.origin + "?page={page}";
+    </script>
+    """
+    st.markdown(js, unsafe_allow_html=True)
 
 def init_session_state():
     """Initialise les variables de session si elles n'existent pas déjà"""
