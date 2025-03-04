@@ -56,7 +56,7 @@ ASSISTANTES = ["Laura", "Léonor", "Autre"]
 # Configuration pour l'envoi d'emails
 EMAIL_CONFIG = {
     "sender": "skita@orpi.com",
-    "smtp_server": "smtp.gmail.com",
+    "smtp_server": "smtp.orpi.com",
     "port": 587,
     "subject_prefix": "🔔 +1 CONTACT : ",
     "sender_name": "Transmission Contact ORPI Arcades"
