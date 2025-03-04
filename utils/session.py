@@ -2,11 +2,11 @@ import streamlit as st
 import time
 
 def change_page(page):
-    """Change la page actuelle avec une redirection par URL"""
+    """Change la page actuelle et effectue des opérations complémentaires si nécessaire"""
     # Sauvegarder la page précédente
     previous_page = st.session_state.page
     
-    # Mettre à jour la page dans la session
+    # Changer la page
     st.session_state.page = page
     
     # Réinitialiser certaines variables selon les transitions
@@ -19,14 +19,6 @@ def change_page(page):
     
     if page == "hors_roulement":
         st.session_state.from_hors_roulement = True
-    
-    # Rediriger en utilisant JavaScript
-    js = f"""
-    <script>
-        window.parent.location.href = window.parent.location.origin + "?page={page}";
-    </script>
-    """
-    st.markdown(js, unsafe_allow_html=True)
 
 def init_session_state():
     """Initialise les variables de session si elles n'existent pas déjà"""
@@ -35,6 +27,10 @@ def init_session_state():
     if "page" not in st.session_state:
         st.session_state.page = "accueil"
     
+    # Pour gérer les redirections
+    if "redirect_requested" not in st.session_state:
+        st.session_state.redirect_requested = False
+        
     # Conseiller sélectionné (pour le formulaire)
     if "conseiller_selectionne" not in st.session_state:
         st.session_state.conseiller_selectionne = None
