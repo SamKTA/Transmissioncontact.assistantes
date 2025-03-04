@@ -57,15 +57,9 @@ def main():
     init_session_state()
     
     # Affichage du logo ORPI
-    col_logo, col_title = st.columns([1, 5])
-
-with col_logo:
-    st.image("assets/logo-orpi.jpeg", width=100)
-
-with col_title:
-    st.markdown("<h1 style='margin-top: 25px;'>Gestion des Contacts ORPI Arcades</h1>", unsafe_allow_html=True)
-    st.markdown("<p style='color: #666; font-size: 1.2em;'>Outil de transmission des contacts entrants</p>", unsafe_allow_html=True)
-
+    col1, col2, col3 = st.columns([1, 2, 1])
+with col2:
+    st.image("assets/logo-orpi.jpeg", width=200)
     
     # Navigation en fonction de la page actuelle
     if st.session_state.page == "accueil":
