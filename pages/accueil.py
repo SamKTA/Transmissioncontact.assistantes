@@ -6,13 +6,7 @@ def show():
     """Affiche la page d'accueil"""
     # Charger les icônes Material Design
     load_material_icons()
-    
-    # En-tête de la page
-    header(
-        "Gestion des Contacts ORPI Arcades",
-        "Outil de transmission des contacts entrants"
-    )
-    
+
     # Animation d'introduction (avec CSS)
     st.markdown(
         """
