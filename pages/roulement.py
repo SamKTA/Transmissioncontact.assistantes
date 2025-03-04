@@ -193,14 +193,22 @@ def create_rotation_card(column, rotation_type, color, etat_df, indispo_df):
         col_select, col_skip = st.columns(2)
         
         with col_select:
+            # Solution directe pour le bouton Sélectionner
             if st.button(f"Sélectionner", key=f"btn_select_{rotation_type}"):
-                # Si sélectionné, on envoie vers le formulaire avec ce conseiller
+                # Préparer les variables nécessaires pour le formulaire
                 st.session_state.type_roulement = rotation_type
                 st.session_state.conseiller_selectionne = CONSEILLERS.get(
                     st.session_state[current_key], 
                     st.session_state[current_key]
                 )
-                change_page("formulaire")
+                
+                # Redirection directe avec JavaScript (plus fiable que change_page)
+                js = f"""
+                <script>
+                    window.parent.location.href = window.parent.location.origin + "?page=formulaire";
+                </script>
+                """
+                st.markdown(js, unsafe_allow_html=True)
         
         with col_skip:
             # Utiliser un callback pour le bouton Suivant
