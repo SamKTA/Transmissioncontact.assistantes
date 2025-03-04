@@ -1,6 +1,7 @@
 import streamlit as st
 from pages import accueil, roulement, hors_roulement, formulaire
 from utils.session import init_session_state
+from utils.ui import loading_animation
 
 # Configuration de la page
 st.set_page_config(
@@ -55,6 +56,13 @@ def main():
     col1, col2, col3 = st.columns([1, 2, 1])
     with col2:
         st.image("https://upload.wikimedia.org/wikipedia/fr/thumb/1/1a/Logo_orpi_2016.png/1200px-Logo_orpi_2016.png", width=200)
+    
+    # Vérifier si nous sommes en état de chargement
+    if st.session_state.is_loading:
+        # Afficher l'animation de chargement
+        loading_animation()
+        # Désactiver l'état de chargement pour la prochaine fois
+        st.session_state.is_loading = False
     
     # Navigation en fonction de la page actuelle
     if st.session_state.page == "accueil":
