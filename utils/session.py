@@ -1,24 +1,39 @@
 import streamlit as st
+import time
 
-def change_page_with_loading(page):
-    """Change la page avec un indicateur de chargement"""
-    # Activer l'état de chargement
-    st.session_state.is_loading = True
+def change_page(page):
+    """Change la page actuelle avec un effet de chargement"""
+    # Sauvegarder la page précédente
+    previous_page = st.session_state.page
     
-    # Changer la page
-    st.session_state.page = page
+    # Afficher un spinner pendant 0.5 seconde pour simuler un chargement
+    with st.spinner("Chargement en cours..."):
+        # Changer la page
+        st.session_state.page = page
+        
+        # Ajouter un petit délai pour que le spinner soit visible
+        time.sleep(0.5)
+    
+    # Réinitialiser certaines variables selon les transitions
+    if previous_page == "roulement" and page == "accueil":
+        st.session_state.type_roulement = None
+        st.session_state.conseiller_selectionne = None
+    
+    if previous_page == "hors_roulement" and page == "accueil":
+        st.session_state.from_hors_roulement = False
+    
+    if page == "hors_roulement":
+        st.session_state.from_hors_roulement = True
+    
+    # Forcer le rechargement de la page
+    st.experimental_rerun()
 
-# Mise à jour de la fonction init_session_state
 def init_session_state():
     """Initialise les variables de session si elles n'existent pas déjà"""
     
     # Page actuelle (pour la navigation)
     if "page" not in st.session_state:
         st.session_state.page = "accueil"
-    
-    # État de chargement
-    if "is_loading" not in st.session_state:
-        st.session_state.is_loading = False
     
     # Conseiller sélectionné (pour le formulaire)
     if "conseiller_selectionne" not in st.session_state:
