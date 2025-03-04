@@ -55,7 +55,7 @@ ASSISTANTES = ["Laura", "Léonor", "Autre"]
 
 # Configuration pour l'envoi d'emails
 EMAIL_CONFIG = {
-    "sender": "contactpro.skdigital@gmail.com",
+    "sender": "skita@orpi.com",
     "smtp_server": "smtp.gmail.com",
     "port": 587,
     "subject_prefix": "🔔 +1 CONTACT : ",
