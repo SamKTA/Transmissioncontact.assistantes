@@ -44,11 +44,6 @@ st.markdown("""
         color: #484848;
         font-weight: 500;
     }
-    /* Style pour le message de chargement */
-    .stSpinner {
-        text-align: center;
-        margin: 1rem 0;
-    }
 </style>
 """, unsafe_allow_html=True)
 
@@ -56,16 +51,17 @@ def main():
     # Initialisation des variables de session
     init_session_state()
     
-    # Vérifier si un paramètre de page est présent dans l'URL
-    query_params = st.experimental_get_query_params()
-    if "page" in query_params:
-        # Mettre à jour la page à partir de l'URL
-        st.session_state.page = query_params["page"][0]
+    # Vérifier si une redirection a été demandée
+    if "redirect_requested" in st.session_state and st.session_state.redirect_requested:
+        # Réinitialiser le drapeau de redirection
+        st.session_state.redirect_requested = False
+        # Forcer un rechargement pour appliquer la navigation
+        st.experimental_rerun()
     
     # Affichage du logo ORPI
     col_logo, col_title = st.columns([1, 5])
     with col_logo:
-        st.image("assets/logo-orpi.jpeg", width=100)
+        st.image("https://upload.wikimedia.org/wikipedia/fr/thumb/f/f9/Logo-ORPI.png/320px-Logo-ORPI.png", width=100)
     with col_title:
         st.markdown("<h1 style='margin-top: 25px;'>Gestion des Contacts ORPI Arcades</h1>", unsafe_allow_html=True)
         st.markdown("<p style='color: #666; font-size: 1.2em;'>Outil de transmission des contacts entrants</p>", unsafe_allow_html=True)
