@@ -56,10 +56,19 @@ def main():
     # Initialisation des variables de session
     init_session_state()
     
+    # Vérifier si un paramètre de page est présent dans l'URL
+    query_params = st.experimental_get_query_params()
+    if "page" in query_params:
+        # Mettre à jour la page à partir de l'URL
+        st.session_state.page = query_params["page"][0]
+    
     # Affichage du logo ORPI
-    col1, col2, col3 = st.columns([1, 2, 1])
-    with col2:
-        st.image("assets/logo-orpi.jpeg", width=200)
+    col_logo, col_title = st.columns([1, 5])
+    with col_logo:
+        st.image("assets/logo-orpi.png", width=100)
+    with col_title:
+        st.markdown("<h1 style='margin-top: 25px;'>Gestion des Contacts ORPI Arcades</h1>", unsafe_allow_html=True)
+        st.markdown("<p style='color: #666; font-size: 1.2em;'>Outil de transmission des contacts entrants</p>", unsafe_allow_html=True)
     
     # Navigation en fonction de la page actuelle
     if st.session_state.page == "accueil":
