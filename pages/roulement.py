@@ -57,7 +57,7 @@ def show():
     col1, col2, col3 = st.columns(3)
     
     # Fonction pour créer une carte de roulement
-    def create_rotation_card(column, rotation_type, color):
+   def create_rotation_card(column, rotation_type, color):
     with column:
         # Trouver le dernier conseiller et déterminer le prochain
         rotation_data = etat_df[etat_df["Type"] == rotation_type]
@@ -98,27 +98,33 @@ def show():
         
         with col_skip:
             if st.button(f"Suivant", key=f"btn_skip_{rotation_type}"):
-                # Si "Suivant" est cliqué, on passe simplement au conseiller suivant
-                skipped_key = f"skipped_{rotation_type}"
-                if skipped_key not in st.session_state:
-                    st.session_state[skipped_key] = []
+                # Solution directe : utiliser l'ordre prédéfini et passer au suivant
+                order = ROULEMENTS[rotation_type]
                 
-                # Ajouter le conseiller actuel à la liste des sautés
-                if st.session_state[current_counselor_key]:
-                    st.session_state[skipped_key].append(st.session_state[current_counselor_key])
+                # Trouver l'index du conseiller actuel dans l'ordre
+                try:
+                    current_idx = order.index(st.session_state[current_counselor_key])
+                    # Passer au conseiller suivant (avec boucle à la fin)
+                    next_idx = (current_idx + 1) % len(order)
+                    next_counselor = order[next_idx]
+                    
+                    # Vérifier si le conseiller est disponible
+                    if not is_available(next_counselor, indispo_df):
+                        # Si indisponible, passer au suivant
+                        next_idx = (next_idx + 1) % len(order)
+                        next_counselor = order[next_idx]
+                    
+                    # Message pour montrer le changement
+                    st.warning(f"Passage de {st.session_state[current_counselor_key]} à {next_counselor}.")
+                    
+                    # Mettre à jour le conseiller actuel
+                    st.session_state[current_counselor_key] = next_counselor
+                    
+                except ValueError:
+                    # Si le conseiller actuel n'est pas dans l'ordre, prendre le premier
+                    st.session_state[current_counselor_key] = order[0]
                 
-                # Obtenir le prochain conseiller
-                st.session_state[current_counselor_key] = get_next_counselor(
-                    rotation_type, 
-                    last_counselor, 
-                    indispo_df, 
-                    st.session_state[skipped_key]
-                )
-                
-                # Notification pour indiquer que le conseiller a été sauté
-                st.warning(f"Conseiller {st.session_state[current_counselor_key]} proposé pour le prochain contact.")
-                
-                # Forcer le rechargement de la page pour montrer le changement
+                # Forcer le rechargement pour afficher le nouveau conseiller
                 st.experimental_rerun()
     
     # Afficher les cartes de roulement
