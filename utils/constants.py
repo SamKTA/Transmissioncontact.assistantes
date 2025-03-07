@@ -26,7 +26,7 @@ EMAILS_CONSEILLERS = {
     "Joshua BESSE": "joshua.besse@orpi.com",
     "Irina GALOYAN": "irina@orpi.com",
     "Arnaud SELLAM": "arnaud.sellam@orpi.com",
-    "Benoît COUSTEAUD": "benoit.cousteaud@orpi.com",
+    "Benoît COUSTEAUD": "benoit.cousteau@orpi.com",
     "Orianne BOULESTEIX": "orianne@orpi.com",
     "Cyril REINICHE": "cyrilreiniche@orpi.com",
     "Sam.test": "skita@orpi.com",
