@@ -21,16 +21,17 @@ CONSEILLERS = {
 EMAILS_CONSEILLERS = {
     "Clément VIREUX": "clement.vigreux@orpi.com",
     "Pascal BOFFERON": "pascal.bofferon@orpi.com",
-    "Angélique CHENERAILLES": "angélique.chenerailles@orpi.com",
-    "Bertrand FOURNIER": "bertrand.fournier.agencedesarcades@orpi.com",
+    "Angélique CHENERAILLES": "angelique.chenerailles@orpi.com",
+    "Bertrand FOURNIER": "bertrand@orpi.com",
     "Joshua BESSE": "joshua.besse@orpi.com",
     "Irina GALOYAN": "irina@orpi.com",
     "Arnaud SELLAM": "arnaud.sellam@orpi.com",
-    "Benoît COUSTEAUD": "benoît.cousteaud@orpi.com",
+    "Benoît COUSTEAUD": "benoit.cousteaud@orpi.com",
     "Orianne BOULESTEIX": "orianne@orpi.com",
     "Cyril REINICHE": "cyrilreiniche@orpi.com",
     "Sam.test": "skita@orpi.com",
     "Severine RAFIK" : "severine.rafik@orpi.com"
+    "Serge MONDOUT" : "smondout@orpipro.com"
 }
 
 # Définition des ordres de roulement pour chaque type
