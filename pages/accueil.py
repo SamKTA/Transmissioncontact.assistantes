@@ -6,7 +6,7 @@ def show():
     """Affiche la page d'accueil"""
     # Charger les icônes Material Design
     load_material_icons()
-
+    
     # Animation d'introduction (avec CSS)
     st.markdown(
         """
