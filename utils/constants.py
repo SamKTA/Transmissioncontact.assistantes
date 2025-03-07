@@ -13,7 +13,8 @@ CONSEILLERS = {
     "Benoît": "Benoît COUSTEAUD",
     "Orianne": "Orianne BOULESTEIX",
     "Cyril": "Cyril REINICHE",
-    "Sam.test": "Sam.test"
+    "Sam.test": "Sam.test",
+    "Severine" : "Severine RAFIK"
 }
 
 # Liste des emails des conseillers
@@ -28,21 +29,22 @@ EMAILS_CONSEILLERS = {
     "Benoît COUSTEAUD": "benoît.cousteaud@orpi.com",
     "Orianne BOULESTEIX": "orianne@orpi.com",
     "Cyril REINICHE": "cyrilreiniche@orpi.com",
-    "Sam.test": "skita@orpi.com"
+    "Sam.test": "skita@orpi.com",
+    "Severine RAFIK" : "severine.rafik@orpi.com"
 }
 
 # Définition des ordres de roulement pour chaque type
 ROULEMENTS = {
     "VENDEURS PROJET VENTE": [
-        "Joshua", "Arnaud", "Pascal", "Cyril", "Orianne", 
+        "Joshua", "Arnaud", "Pascal", "Cyril", "Orianne", "Severine", 
         "Angélique", "Clément", "Irina", "Benoît", "Sam.test", "Bertrand"
     ],
     "ACQUÉREURS": [
         "Orianne", "Clément", "Benoît", "Irina", "Joshua", 
-        "Sam.test", "Cyril", "Pascal", "Bertrand", "Angélique", "Arnaud"
+        "Sam.test", "Cyril", "Pascal", "Severine", "Bertrand", "Angélique", "Arnaud"
     ],
     "VENDEURS PAS DE PROJET": [
-        "Sam.test", "Joshua", "Pascal", "Clément", "Angélique", 
+        "Sam.test", "Joshua", "Severine", "Pascal", "Clément", "Angélique", 
         "Irina", "Bertrand", "Benoît", "Cyril", "Arnaud", "Orianne"
     ]
 }
